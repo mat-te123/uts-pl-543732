@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Models\Vacant;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Validator;
 
 
 
@@ -15,20 +14,29 @@ class VacantController extends Controller
     {
         $vacants = Vacant::all();
 
-        return response()->json([
-            'Status' => Response::HTTP_OK,
-            'Massage' => "Success",
-            'vacants' => $vacants
+        if ($vacants->isEmpty()){
+            return response()->json([
+                'Status' => Response::HTTP_OK,
+                'Massage' => "Success",
+                'vacants' => 'empty',
+            ]);
+        } else {
+            return response()->json([
+                'Status' => Response::HTTP_OK,
+                'Massage' => "Success",
+                'vacants' => $vacants
+            ]);
+        }
 
-        ]);
 
         
     }
     public function post(Request $request)
     {
-        $validate = Validator::make($request->all(), [
-            'vacant_title' => 'string|require',
-            'vacant_link' => 'string|require',
+        $validate = $request->validate([
+            'vacant_name' => 'string|required',
+            'vacant_desc' => 'string|required',
+            'vacant_link' => 'string|required',
         ]);
 
         $vacant = Vacant::create($validate);

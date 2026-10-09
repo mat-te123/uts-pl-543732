@@ -1,0 +1,13 @@
+services:
+  db:
+    image: postgres:18
+    environment:
+      POSTGRES_USER: vacant
+      POSTGRES_PASSWORD: 123123
+      POSTGRES_DB: vacant_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - vacant_data:/var/lib/postgresql
+volumes:
+  vacant_data:

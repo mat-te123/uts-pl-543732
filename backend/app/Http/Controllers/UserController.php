@@ -46,7 +46,8 @@ class UserController extends Controller
             'status' => 'success',
             'message' => 'user berhasil didaftarkan',
             'token' => $token,
-            'type' => 'Bearer'
+            'type' => 'Bearer',
+            'data' => $user,
         ], Response::HTTP_OK);
 
 
@@ -60,4 +61,18 @@ class UserController extends Controller
             'message' => 'logout success'
         ]);
     }
+
+    public function delete(string $id)
+    {
+        $user = User::findOrFail($id);
+        $user->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'user berhasil di hapus'
+        ], Response::HTTP_OK);
+
+    }
+
+    
 }

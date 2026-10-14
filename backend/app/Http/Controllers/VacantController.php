@@ -16,10 +16,10 @@ class VacantController extends Controller
 
         if ($vacants->isEmpty()){
             return response()->json([
-                'Status' => "success",
-                'Massage' => "data kosong",
-                'vacants' => 'empty',
-            ], Response::HTTP_OK);
+                'Status' => 'success',
+                'Massage' => $vacants->isEmpty() ? 'data kosong' : 'data ditemukan',
+                'vacants' => $vacants
+            ], 200);
         } else {
             return response()->json([
                 'Status' => "success",

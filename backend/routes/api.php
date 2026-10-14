@@ -16,5 +16,6 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('/vacants', 'index');
         Route::post('/vacant/post', 'post');
         Route::delete('/vacant/{id}', 'delete');
+        Route::put('/vacant/{id}', 'update');
     });
 });

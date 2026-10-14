@@ -16,16 +16,16 @@ class VacantController extends Controller
 
         if ($vacants->isEmpty()){
             return response()->json([
-                'Status' => Response::HTTP_OK,
-                'Massage' => "Success",
+                'Status' => "success",
+                'Massage' => "data kosong",
                 'vacants' => 'empty',
-            ]);
+            ], Response::HTTP_OK);
         } else {
             return response()->json([
-                'Status' => Response::HTTP_OK,
-                'Massage' => "Success",
+                'Status' => "success",
+                'Massage' => "data berhasil di ambil",
                 'vacants' => $vacants
-            ]);
+            ], Response::HTTP_OK);
         }
 
 
@@ -42,20 +42,39 @@ class VacantController extends Controller
         $vacant = Vacant::create($validate);
 
         return response()->json([
-            'Status' => Response::HTTP_OK,
+            'Status' => "success",
             'Massage' => 'Success added data',
-        ]);
+        ], Response::HTTP_OK);
     }
 
     public function delete(Request $request, string $id)
     {
         $vacant = Vacant::findOrFail($id);
-        $vacant->destroy();
+
+        $vacant->delete();
 
         return response()->json([
-            'Status' => Response::HTTP_OK,
+            'Status' => 'success',
             'Massage' => 'vacant deleted',
+        ], Response::HTTP_OK);
+
+    }
+
+    public function update(Request $request, Vacant $vacant)
+    {
+        
+        $data = $request->validate([
+            'vacant_name' => 'string|required|sometimes',
+            'vacant_desc' => 'string|required|sometimes',
+            'vacant_link' => 'string|required|sometimes',
         ]);
 
+        $vacant->update($data);
+
+        return response()->json([
+            'Status' => "success",
+            'message' => "data berhasil di update",
+            'data' => $data,
+        ], Response::HTTP_OK);
     }
 }

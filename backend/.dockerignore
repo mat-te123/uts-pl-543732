@@ -1,0 +1,13 @@
+node_modules
+vendor
+.env
+.env.example
+.git
+.gitignore
+storage/*.sqlite
+storage/logs/*
+bootstrap/cache/*
+public/storage
+docker-compose.yml
+Dockerfile
+README.md

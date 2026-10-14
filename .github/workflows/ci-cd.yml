@@ -38,7 +38,7 @@ jobs:
         working-directory: ./backend
         run: |
           touch database/database.sqlite
-          php artisan migrate --force
+          DB_CONNECTION=sqlite DB_DATABASE=database/database.sqlite php artisan migrate --force
 
       - name: Start Laravel Server in Background
         working-directory: ./backend

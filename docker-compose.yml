@@ -3,11 +3,45 @@ services:
     image: postgres:18
     environment:
       POSTGRES_USER: vacant
-      POSTGRES_PASSWORD: 123123
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: vacant_db
-    ports:
-      - "5433:5432"
     volumes:
       - vacant_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U vacant -d vacant_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      target: runner
+    environment:
+      APP_ENV: production
+      APP_DEBUG: "false"
+      APP_KEY: ${APP_KEY}
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: vacant_db
+      DB_USERNAME: vacant
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:80"
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: http://localhost:8000/api
+    depends_on:
+      - backend
+    ports:
+      - "8080:80"
+
 volumes:
   vacant_data:

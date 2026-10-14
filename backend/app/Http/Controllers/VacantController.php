@@ -54,8 +54,8 @@ class VacantController extends Controller
         $vacant->delete();
 
         return response()->json([
-            'Status' => 'success',
-            'Massage' => 'vacant deleted',
+            'status' => 'success',
+            'massage' => 'vacant deleted',
         ], Response::HTTP_OK);
 
     }
@@ -72,7 +72,7 @@ class VacantController extends Controller
         $vacant->update($data);
 
         return response()->json([
-            'Status' => "success",
+            'status' => "success",
             'message' => "data berhasil di update",
             'data' => $data,
         ], Response::HTTP_OK);

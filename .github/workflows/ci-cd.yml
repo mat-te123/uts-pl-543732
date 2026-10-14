@@ -2,9 +2,9 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ "main", "dev" ]
+    branches: ["main", "dev"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 env:
   REGISTRY: ghcr.io
@@ -21,25 +21,35 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.3'
+          php-version: "8.3"
           extensions: mbstring, dom, fileinfo, sqlite3, pdo_sqlite
 
       - name: Install Backend Dependencies
         working-directory: ./backend
         run: composer install --prefer-dist --no-progress --no-suggest
 
-      - name: Copy Environment File
+      - name: Copy Environment & Generate Key
         working-directory: ./backend
-        run: cp .env.example .env || echo "APP_KEY=base64:TestKeyForCiPipeline1234567890=" > .env
+        run: |
+          cp .env.example .env || echo "APP_KEY=base64:TestKeyForCiPipeline1234567890=" > .env
+          php artisan key:generate
+
+      - name: Setup Database (SQLite for testing)
+        working-directory: ./backend
+        run: |
+          touch database/database.sqlite
+          php artisan migrate --force
+
+      - name: Start Laravel Server in Background
+        working-directory: ./backend
+        run: php artisan serve --host=127.0.0.1 --port=8000 &
+
+      - name: Wait for Server to Boot
+        run: sleep 3
 
       - name: Run PHPUnit Tests
         working-directory: ./backend
-        run: |
-          php artisan key:generate
-          # If your tests require a running server or sqlite database, configure it here
-          # For testing locally with SQLite:
-          touch database/database.sqlite
-          DB_CONNECTION=sqlite DB_DATABASE=database/database.sqlite ./vendor/bin/phpunit
+        run: ./vendor/bin/phpunit tests/Feature/VacantTest.php
 
   # ── JOB 2: Frontend Build Verification ────────────────────────────────────
   frontend-build:
@@ -51,8 +61,8 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '20'
-          cache: 'npm'
+          node-version: "20"
+          cache: "npm"
           cache-dependency-path: frontend/package-lock.json
 
       - name: Install Frontend Dependencies

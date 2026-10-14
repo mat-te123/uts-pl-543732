@@ -1,0 +1,103 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  # ── JOB 1: Backend Automated Testing ──────────────────────────────────────
+  backend-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, dom, fileinfo, sqlite3, pdo_sqlite
+
+      - name: Install Backend Dependencies
+        working-directory: ./backend
+        run: composer install --prefer-dist --no-progress --no-suggest
+
+      - name: Copy Environment File
+        working-directory: ./backend
+        run: cp .env.example .env || echo "APP_KEY=base64:TestKeyForCiPipeline1234567890=" > .env
+
+      - name: Run PHPUnit Tests
+        working-directory: ./backend
+        run: |
+          php artisan key:generate
+          # If your tests require a running server or sqlite database, configure it here
+          # For testing locally with SQLite:
+          touch database/database.sqlite
+          DB_CONNECTION=sqlite DB_DATABASE=database/database.sqlite ./vendor/bin/phpunit
+
+  # ── JOB 2: Frontend Build Verification ────────────────────────────────────
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install Frontend Dependencies
+        working-directory: ./frontend
+        run: npm ci
+
+      - name: Build Frontend Assets
+        working-directory: ./frontend
+        run: npm run build
+        env:
+          VITE_API_URL: http://localhost:8000/api
+
+  # ── JOB 3: Build & Push Docker Images to GHCR ─────────────────────────────
+  push-to-ghcr:
+    needs: [backend-test, frontend-build] # Only runs if tests & build pass!
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build and Push Backend Docker Image (FrankenPHP)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./backend
+          file: ./backend/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-backend:latest
+
+      - name: Build and Push Frontend Docker Image (Vite/Nginx)
+        uses: docker/build-push-action@v5
+        with:
+          context: ./frontend
+          file: ./frontend/Dockerfile
+          push: true
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-frontend:latest
+          build-args: |
+            VITE_API_URL=https://your-production-backend-url.com/api

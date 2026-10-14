@@ -12,6 +12,7 @@ Route::post('user/login', [UserController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function() {
     Route::post('/logout', [UserController::class, 'logout']);
+    Route::delete('/user/{id}', [UserController::class, 'delete']);
     Route::controller(VacantController::class)->group(function(){
         Route::get('/vacants', 'index');
         Route::post('/vacant/post', 'post');

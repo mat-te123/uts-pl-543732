@@ -86,7 +86,7 @@ jobs:
   push-to-ghcr:
     needs: [backend-test, frontend-build] # Only runs if tests & build pass!
     runs-on: ubuntu-latest
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main')
+    if: github.event_name == 'push' || github.event_name == 'pull_request' && (github.ref == 'refs/heads/main')
     permissions:
       contents: read
       packages: write

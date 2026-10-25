@@ -11,7 +11,6 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  # ── JOB 1: Backend Automated Testing ──────────────────────────────────────
   backend-test:
     runs-on: ubuntu-latest
     steps:
@@ -31,7 +30,7 @@ jobs:
       - name: Copy Environment & Generate Key
         working-directory: ./backend
         run: |
-          cp .env.example .env || echo "APP_KEY=base64:TestKeyForCiPipeline1234567890=" > .env
+          cp .env.example .env || echo "APP_KEY=${{ secrets.APP_KEY }}" > .env
           php artisan key:generate
 
       - name: Prepare SQLite Database
@@ -58,7 +57,6 @@ jobs:
           DB_CONNECTION: sqlite
           DB_DATABASE: database/database.sqlite
 
-  # ── JOB 2: Frontend Build Verification ────────────────────────────────────
   frontend-build:
     runs-on: ubuntu-latest
     steps:
@@ -80,12 +78,12 @@ jobs:
         working-directory: ./frontend
         run: npm run build
         env:
-          VITE_API_URL: http://localhost:8000/api
+          VITE_API_URL: ${{ secrets.VITE_API_URL }}
 
-  # ── JOB 3: Build & Push Docker Images to GHCR ─────────────────────────────
   push-to-ghcr:
     needs: [backend-test, frontend-build] # Only runs if tests & build pass!
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     permissions:
       contents: read
       packages: write
@@ -107,7 +105,7 @@ jobs:
           context: ./backend
           file: ./backend/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}-backend:latest
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-backend-${{ github.sha }}
 
       - name: Build and Push Frontend Docker Image (Vite/Nginx)
         uses: docker/build-push-action@v5
@@ -115,6 +113,6 @@ jobs:
           context: ./frontend
           file: ./frontend/Dockerfile
           push: true
-          tags: ${{ env.REGISTRY }}/${{ github.repository }}-frontend:latest
+          tags: ${{ env.REGISTRY }}/${{ github.repository }}-frontend-${{ github.sha }}
           build-args: |
             VITE_API_URL=https://your-production-backend-url.com/api

@@ -1,4 +1,4 @@
-FROM dunglas/frankenphp:php8.5 AS base
+FROM dunglas/frankenphp:php8.5-alpine AS base
 
 WORKDIR /app
 
@@ -19,9 +19,8 @@ COPY --from=composer:2.8 /usr/bin/composer /usr/bin/composer
 # ── STAGE 2: Composer Dependencies ──────────────────────────────────────
 FROM base AS vendor
 
-RUN apt-get update \
- && apt-get install -y --no-install-recommends git unzip \
- && rm -rf /var/lib/apt/lists/*
+# Use apk (Alpine's package manager) instead of apt-get
+RUN apk add --no-cache git unzip
 
 COPY composer.json composer.lock ./
 

@@ -135,14 +135,9 @@ onMounted(loadData)
             <h2>{{ vacant.vacant_name }}</h2>
             <p>{{ vacant.vacant_desc }}</p>
           </div>
-          <a
-            class="btn btn-primary"
-            :href="vacant.vacant_link"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Lihat lowongan
-          </a>
+          <RouterLink class="btn btn-primary" :to="{ name: 'VacantDetail', params: { id: vacant.id } }">
+            Lihat detail
+          </RouterLink>
         </li>
       </ul>
     </main>

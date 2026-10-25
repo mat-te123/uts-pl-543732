@@ -16,6 +16,10 @@ export const VacantAPI = {
       return error
     }
   },
+  getById: async (id: string | number) => {
+    const response = await apiClient.get(`${base_url}/vacant/${id}`)
+    return response.data
+  },
   addvacant: async (data: { vacant_name: string; vacant_desc: string; vacant_link: string }) => {
     try {
       const response = await apiClient.post('/vacant/post', {
@@ -23,7 +27,15 @@ export const VacantAPI = {
         vacant_desc: data.vacant_desc,
         vacant_link: data.vacant_link,
       })
-      
+
+      return response.data
+    } catch (error: any) {
+      throw error.response?.data || error
+    }
+  },
+  deletevacant: async (id: string | number) => {
+    try {
+      const response = await apiClient.delete(`/vacant/${id}`)
       return response.data
     } catch (error: any) {
       throw error.response?.data || error

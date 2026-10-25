@@ -15,6 +15,7 @@ Route::middleware('auth:sanctum')->group(function() {
     Route::delete('/user/{id}', [UserController::class, 'delete']);
     Route::controller(VacantController::class)->group(function(){
         Route::get('/vacants', 'index');
+        Route::get('/vacant/{id}', 'show');
         Route::post('/vacant/post', 'post');
         Route::delete('/vacant/{id}', 'delete');
         Route::put('/vacant/{id}', 'update');

@@ -19,7 +19,7 @@ class VacantController extends Controller
                 'Status' => 'success',
                 'Massage' => $vacants->isEmpty() ? 'data kosong' : 'data ditemukan',
                 'vacants' => $vacants
-            ], 200);
+            ], Response::HTTP_OK);
         } else {
             return response()->json([
                 'Status' => "success",
@@ -31,6 +31,25 @@ class VacantController extends Controller
 
         
     }
+    
+    public function show(string $id)
+    {
+        $vacant = Vacant::findOrFail($id);
+
+        if ($vacant) {
+            return response()->json([
+                'Status' => "success",
+                'Massage' => "data berhasil di ambil",
+                'vacant' => $vacant
+            ], Response::HTTP_OK);
+        } else {
+            return response()->json([
+                'Status' => "failed",
+                'Massage' => "data tidak ditemukan",
+            ], Response::HTTP_NOT_FOUND);
+        };
+    } 
+
     public function post(Request $request)
     {
         $validate = $request->validate([
@@ -47,7 +66,7 @@ class VacantController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function delete(Request $request, string $id)
+    public function delete(string $id)
     {
         $vacant = Vacant::findOrFail($id);
 

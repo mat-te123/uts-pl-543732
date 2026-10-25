@@ -27,7 +27,15 @@ export const VacantAPI = {
         vacant_desc: data.vacant_desc,
         vacant_link: data.vacant_link,
       })
-      
+
+      return response.data
+    } catch (error: any) {
+      throw error.response?.data || error
+    }
+  },
+  deletevacant: async (id: string | number) => {
+    try {
+      const response = await apiClient.delete(`/vacant/${id}`)
       return response.data
     } catch (error: any) {
       throw error.response?.data || error

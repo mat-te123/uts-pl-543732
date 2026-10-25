@@ -42,6 +42,20 @@ const loadVacant = async () => {
   }
 }
 
+const deleteVacant = async () => {
+  if (!vacant.value) return
+
+  try {
+    if (!confirm('Apakah Anda yakin ingin menghapus lowongan ini?')) {
+      return
+    }
+    await VacantAPI.deletevacant(vacant.value.id)
+    router.push({ name: 'Vacant' })
+  } catch (error) {
+    console.error('Error deleting vacant:', error)
+    errorMessage.value = 'Gagal menghapus lowongan. Coba lagi.'
+  }
+}
 onMounted(loadVacant)
 </script>
 
@@ -84,6 +98,7 @@ onMounted(loadVacant)
         >
           Tonton video di YouTube
         </a>
+        <button class="btn btn-primary" type="button" @click="deleteVacant">Hapus Lowongan</button>
       </article>
     </main>
   </div>

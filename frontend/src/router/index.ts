@@ -1,5 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import VacantView from '@/view/vacant/VacantView.vue'
+import DetailVacantView from '@/view/vacant/DetailVacantView.vue'
 import LoginRegister from '@/view/auth/LoginRegister.vue'
 import { TokenService } from '@/services/auth/TokenService'
 
@@ -10,6 +11,12 @@ const router = createRouter({
       path: '/vacants',
       name: 'Vacant',
       component: VacantView,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: '/vacant/:id',
+      name: 'VacantDetail',
+      component: DetailVacantView,
       meta: { requiresAuth: true },
     },
     {

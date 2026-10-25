@@ -1,0 +1,249 @@
+{
+  "info": {
+    "_postman_id": "df06d745-e462-4669-8667-5645dfd11d63",
+    "name": "Vacant-API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "49180579"
+  },
+  "item": [
+    {
+      "name": "user-register",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"name\": \"Joko\",\r\n    \"email\": \"Joko@mail.com\",\r\n    \"password\": \"Joko123123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/user/register",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "user",
+            "register"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "user-login",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"email\": \"Joko@mail.com\",\r\n    \"password\": \"Joko123123\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/user/login",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "user",
+            "login"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "add-vacant",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "10|QTAEazXYO3KerTYPRnmKUhzeD8oe5MhKWCNpKiSRe8264e35",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"vacant_name\": \"Data Analysis\",\r\n    \"vacant_desc\": \"JALA\",\r\n    \"vacant_link\": \"https://www.youtube.com/watch?v=p7Igl9dwOWE&pp=ugUEEgJlbg%3D%3D\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/vacant/post",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "vacant",
+            "post"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get-vacants",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "10|QTAEazXYO3KerTYPRnmKUhzeD8oe5MhKWCNpKiSRe8264e35",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/vacants",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "vacants"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "get-vacant",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "id",
+            "value": "3"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/vacant",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "vacant"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "update-vacant",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "10|QTAEazXYO3KerTYPRnmKUhzeD8oe5MhKWCNpKiSRe8264e35",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"vacant_name\": \"App developer\",\r\n    \"vacant_desc\": \"JALA\",\r\n    \"vacant_link\": \"https://www.youtube.com/watch?v=yye7rSsiV6k&pp=ugMICgJpZBABGAHKBQ9hcHAgZGV2ZWxvcG1lbnQ%3D\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_url}}/vacant/16",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "vacant",
+            "16"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete-vacant",
+      "request": {
+        "auth": {
+          "type": "bearer",
+          "bearer": [
+            {
+              "key": "token",
+              "value": "10|QTAEazXYO3KerTYPRnmKUhzeD8oe5MhKWCNpKiSRe8264e35",
+              "type": "string"
+            }
+          ]
+        },
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/vacant/16",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "vacant",
+            "16"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "delete-user",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/user/13",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "user",
+            "13"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "10|QTAEazXYO3KerTYPRnmKUhzeD8oe5MhKWCNpKiSRe8264e35",
+        "type": "string"
+      }
+    ]
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": ""
+    }
+  ]
+}
